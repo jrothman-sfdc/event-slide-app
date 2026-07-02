@@ -1,5 +1,33 @@
 const BASE = window.location.origin;
 
+async function checkAuth() {
+  try {
+    const res = await fetch('/auth/status');
+    const { authenticated, email } = await res.json();
+    const banner = document.getElementById('auth-banner');
+    const disconnected = document.getElementById('auth-disconnected');
+    const connected = document.getElementById('auth-connected');
+    const addBtn = document.getElementById('add-btn');
+
+    banner.style.display = 'block';
+    disconnected.style.display = authenticated ? 'none' : 'block';
+    connected.style.display = authenticated ? 'block' : 'none';
+    addBtn.disabled = !authenticated;
+
+    if (authenticated && email) {
+      document.getElementById('auth-email').textContent = email;
+    }
+  } catch (e) {
+    console.warn('Auth check failed:', e.message);
+  }
+}
+
+async function disconnectGoogle() {
+  if (!confirm('Disconnect Google account? You will need to reconnect to manage shows.')) return;
+  await fetch('/auth/disconnect', { method: 'POST' });
+  checkAuth();
+}
+
 async function loadShows() {
   const list = document.getElementById('show-list');
   try {
@@ -115,4 +143,24 @@ document.getElementById('slides-url').addEventListener('keydown', e => {
   if (e.key === 'Enter') addShow();
 });
 
+// Handle redirect messages from OAuth callback
+const authParam = new URLSearchParams(location.search).get('auth');
+if (authParam === 'success') {
+  const el = document.getElementById('form-success');
+  el.textContent = 'Google account connected successfully.';
+  el.style.display = 'block';
+  history.replaceState({}, '', '/');
+} else if (authParam === 'denied') {
+  const el = document.getElementById('form-error');
+  el.textContent = 'Google sign-in was cancelled.';
+  el.style.display = 'block';
+  history.replaceState({}, '', '/');
+} else if (authParam === 'no_refresh_token') {
+  const el = document.getElementById('form-error');
+  el.textContent = 'No refresh token received. Try visiting myaccount.google.com/permissions, removing this app, then connecting again.';
+  el.style.display = 'block';
+  history.replaceState({}, '', '/');
+}
+
+checkAuth();
 loadShows();

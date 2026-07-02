@@ -18,6 +18,12 @@ async function initDb() {
       created_at TIMESTAMP DEFAULT NOW()
     )
   `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS config (
+      key VARCHAR(100) PRIMARY KEY,
+      value TEXT NOT NULL
+    )
+  `);
   console.log('Database initialized');
 }
 

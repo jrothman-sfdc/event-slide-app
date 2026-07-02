@@ -184,6 +184,29 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .show-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
 
+.auth-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+}
+
+.auth-msg {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 0.75rem;
+}
+
+.auth-ok { color: #50e080; margin-bottom: 0; }
+
+.btn-auth {
+  display: inline-block;
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+}
+
 .empty-state {
   color: #555;
   font-size: 0.9rem;

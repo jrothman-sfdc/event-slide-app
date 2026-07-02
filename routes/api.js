@@ -31,11 +31,8 @@ router.post('/shows', async (req, res) => {
   const presentationId = extractPresentationId(url);
   if (!presentationId) return res.status(400).json({ error: 'Invalid Google Slides URL or ID' });
 
-  const apiKey = process.env.GOOGLE_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'GOOGLE_API_KEY is not configured on the server' });
-
   try {
-    const { title, slides } = await fetchPresentationData(presentationId, apiKey);
+    const { title, slides } = await fetchPresentationData(presentationId);
     const slug = nanoid();
     const duration = Math.max(1000, parseInt(defaultDuration) || 5000);
 
@@ -48,8 +45,8 @@ router.post('/shows', async (req, res) => {
     res.json({ ...result.rows[0], slideCount: slides.length });
   } catch (err) {
     console.error('Error creating show:', err);
-    const msg = err.message.includes('API key') || err.message.includes('403')
-      ? 'Google API access denied. Check your API key and that the presentation is publicly shared.'
+    const msg = err.message === 'NOT_AUTHENTICATED'
+      ? 'Not connected to Google. Please authenticate via the admin page.'
       : err.message;
     res.status(500).json({ error: msg });
   }
@@ -61,10 +58,9 @@ router.get('/shows/:slug', async (req, res) => {
     if (!result.rows.length) return res.status(404).json({ error: 'Show not found' });
 
     const show = result.rows[0];
-    const apiKey = process.env.GOOGLE_API_KEY;
 
     const pageIds = show.slides.map(s => s.pageId);
-    const thumbnails = await fetchSlideThumbnails(show.presentation_id, pageIds, apiKey);
+    const thumbnails = await fetchSlideThumbnails(show.presentation_id, pageIds);
 
     const slidesWithImages = show.slides.map(s => ({
       ...s,
@@ -84,9 +80,8 @@ router.post('/shows/:slug/refresh', async (req, res) => {
     if (!result.rows.length) return res.status(404).json({ error: 'Show not found' });
 
     const show = result.rows[0];
-    const apiKey = process.env.GOOGLE_API_KEY;
 
-    const { title, slides } = await fetchPresentationData(show.presentation_id, apiKey);
+    const { title, slides } = await fetchPresentationData(show.presentation_id);
 
     await pool.query(
       'UPDATE shows SET title = $1, slides = $2 WHERE slug = $3',

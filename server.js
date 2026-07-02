@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const { initDb } = require('./db');
 const apiRouter = require('./routes/api');
+const authRouter = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', apiRouter);
+app.use('/auth', authRouter);
 
 app.get('/show/:slug', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'player.html'));

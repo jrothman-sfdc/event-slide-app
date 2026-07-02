@@ -11,6 +11,18 @@
     <h1>Slide Player</h1>
     <p class="subtitle">Load a Google Slides presentation and get a dedicated booth URL.</p>
 
+    <!-- Auth status banner -->
+    <div id="auth-banner" class="card auth-card" style="display:none">
+      <div id="auth-disconnected" style="display:none">
+        <p class="auth-msg">Connect your Google account to access your presentations.</p>
+        <a href="/auth/google" class="btn-primary btn-auth">Connect Google Account</a>
+      </div>
+      <div id="auth-connected" style="display:none">
+        <p class="auth-msg auth-ok">Connected as <strong id="auth-email"></strong></p>
+        <button class="btn-secondary" onclick="disconnectGoogle()">Disconnect</button>
+      </div>
+    </div>
+
     <div class="card">
       <h2>Add Presentation</h2>
       <div id="form-error" class="error"></div>

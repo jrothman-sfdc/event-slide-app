@@ -1,4 +1,5 @@
 const { google } = require('googleapis');
+const { getAuthClient } = require('./auth');
 
 // Standard 16:9 slide dimensions in EMU (English Metric Units)
 const DEFAULT_SLIDE_WIDTH_EMU = 9144000;
@@ -59,14 +60,12 @@ function extractVideoFromElements(elements, slideWidthEmu, slideHeightEmu) {
   return null;
 }
 
-async function fetchPresentationData(presentationId, apiKey) {
-  const slidesApi = google.slides({ version: 'v1' });
-  const driveApi = google.drive({ version: 'v3' });
+async function fetchPresentationData(presentationId) {
+  const auth = await getAuthClient();
+  const slidesApi = google.slides({ version: 'v1', auth });
+  const driveApi = google.drive({ version: 'v3', auth });
 
-  const presentation = await slidesApi.presentations.get({
-    presentationId,
-    key: apiKey
-  });
+  const presentation = await slidesApi.presentations.get({ presentationId });
 
   const data = presentation.data;
   const title = data.title || 'Untitled Presentation';
@@ -91,8 +90,7 @@ async function fetchPresentationData(presentationId, apiKey) {
         try {
           const fileRes = await driveApi.files.get({
             fileId: video.fileId,
-            fields: 'videoMediaMetadata',
-            key: apiKey
+            fields: 'videoMediaMetadata'
           });
           const ms = parseInt(fileRes.data.videoMediaMetadata?.durationMillis);
           if (!isNaN(ms) && ms > 0) videoDurationMs = ms;
@@ -116,16 +114,16 @@ async function fetchPresentationData(presentationId, apiKey) {
   return { title, slides: slideData };
 }
 
-async function fetchSlideThumbnails(presentationId, pageIds, apiKey) {
-  const slidesApi = google.slides({ version: 'v1' });
+async function fetchSlideThumbnails(presentationId, pageIds) {
+  const auth = await getAuthClient();
+  const slidesApi = google.slides({ version: 'v1', auth });
 
   const results = await Promise.allSettled(
     pageIds.map(pageId =>
       slidesApi.presentations.pages.getThumbnail({
         presentationId,
         pageObjectId: pageId,
-        'thumbnailProperties.thumbnailSize': 'LARGE',
-        key: apiKey
+        'thumbnailProperties.thumbnailSize': 'LARGE'
       })
     )
   );
