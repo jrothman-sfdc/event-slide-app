@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Player</title>
+  <link rel="stylesheet" href="/css/player.css">
+</head>
+<body>
+
+  <!-- Shown until user clicks — unlocks audio autoplay -->
+  <div id="start-overlay">
+    <h1 id="show-title">Loading…</h1>
+    <button id="start-btn">Start Presentation</button>
+  </div>
+
+  <!-- Error state -->
+  <div id="error-state">
+    <h2>Could not load show</h2>
+    <p id="error-msg"></p>
+  </div>
+
+  <!-- Main stage -->
+  <div id="stage">
+    <div id="slide-wrapper">
+      <img id="slide-img" src="" alt="" draggable="false">
+
+      <!-- Drive video iframe, positioned absolutely over the slide -->
+      <div id="video-overlay">
+        <iframe
+          id="video-frame"
+          allow="autoplay; fullscreen"
+          allowfullscreen
+          src=""
+        ></iframe>
+      </div>
+    </div>
+
+    <!-- Controls (fade in on hover) -->
+    <div id="controls">
+      <button class="ctrl-btn" id="btn-prev" title="Previous slide" onclick="Player.prev()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="ctrl-btn" id="btn-play" title="Play / Pause" onclick="Player.togglePlay()">
+        <!-- icon swapped by JS -->
+      </button>
+      <button class="ctrl-btn" id="btn-next" title="Next slide" onclick="Player.next()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <span id="slide-counter">– / –</span>
+    </div>
+
+    <!-- Thin progress bar at very bottom -->
+    <div id="progress-dots"><div id="progress-bar"></div></div>
+  </div>
+
+  <script src="/js/player.js"></script>
+</body>
+</html>

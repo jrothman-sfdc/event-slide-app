@@ -1,0 +1,165 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+/* ── Start overlay ── */
+#start-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  gap: 1.5rem;
+}
+
+#start-overlay h1 {
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 300;
+}
+
+#start-btn {
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 50px;
+  padding: 0.9rem 2.8rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.1s;
+}
+
+#start-btn:hover { transform: scale(1.04); }
+
+/* ── Stage ── */
+#stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* ── Slide wrapper: letterboxed 16:9 inside the viewport ── */
+#slide-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* width/height set by JS based on actual viewport */
+}
+
+#slide-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+/* ── Video overlay ── */
+#video-overlay {
+  position: absolute;
+  display: none;
+}
+
+#video-overlay iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* ── Controls overlay (visible on hover) ── */
+#controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem 2rem 1.2rem;
+  background: linear-gradient(transparent, rgba(0,0,0,0.75));
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+
+#stage:hover #controls,
+#controls.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ctrl-btn {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+  font-size: 1rem;
+}
+
+.ctrl-btn:hover { background: rgba(255,255,255,0.3); }
+.ctrl-btn svg { pointer-events: none; }
+
+#slide-counter {
+  color: rgba(255,255,255,0.7);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.85rem;
+  flex: 1;
+  text-align: center;
+}
+
+/* ── Progress dots ── */
+#progress-dots {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.15);
+}
+
+#progress-bar {
+  height: 100%;
+  background: rgba(255,255,255,0.6);
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+/* ── Error state ── */
+#error-state {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #0a0a0a;
+  color: #e05050;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+#error-state.visible { display: flex; }
+#error-state h2 { color: #fff; font-size: 1.2rem; font-weight: 400; }

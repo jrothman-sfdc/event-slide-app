@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Player — Admin</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Slide Player</h1>
+    <p class="subtitle">Load a Google Slides presentation and get a dedicated booth URL.</p>
+
+    <div class="card">
+      <h2>Add Presentation</h2>
+      <div id="form-error" class="error"></div>
+      <div id="form-success" class="success"></div>
+
+      <label for="slides-url">Google Slides URL or Presentation ID</label>
+      <input type="text" id="slides-url" placeholder="https://docs.google.com/presentation/d/..." autocomplete="off">
+
+      <label for="default-duration">Default slide duration (seconds)</label>
+      <div class="row">
+        <input type="number" id="default-duration" value="5" min="1" max="300">
+        <button class="btn-primary" id="add-btn" onclick="addShow()">Load Presentation</button>
+      </div>
+      <p class="hint">Used for slides with no <code>[duration:N]</code> in their notes. Slides with videos default to the video duration.</p>
+    </div>
+
+    <div class="card">
+      <h2>Your Shows</h2>
+      <ul id="show-list">
+        <li class="empty-state">Loading...</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>
